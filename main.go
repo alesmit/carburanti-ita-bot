@@ -3,9 +3,9 @@ package main
 import (
 	"github.com/alesmit/fuel-master/pkg/dataset"
 	"github.com/alesmit/fuel-master/pkg/model"
+	"github.com/alesmit/fuel-master/pkg/utils"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 
-	"encoding/json"
 	"errors"
 	"log"
 	"net/http"
@@ -36,48 +36,40 @@ func main() {
 	go http.ListenAndServe(":"+port, nil)
 
 	for update := range updates {
-
-		js, err := json.Marshal(update)
-		if err != nil {
-			log.Println("error", err)
-		} else {
-			log.Println("success", string(js))
-		}
-
 		if update.Message == nil {
 			continue
 		}
 
-		msgText := "please send your location"
-
-		if update.Message.Location != nil {
-			stations, err := processLocation(update.Message.Location)
-			if err != nil {
-				msgText = wrapError(err)
-			}
-
-			j, err := json.Marshal(stations)
-			if err != nil {
-				msgText = wrapError(err)
-			}
-
-			msgText = string(j)
-
+		if update.Message.Location == nil {
+			bot.Send(tgbotapi.NewMessage(update.Message.Chat.ID, wrapError(err)))
+			continue
 		}
 
-		btn := tgbotapi.NewInlineKeyboardButtonData("Mappa", "asd")
-		row := tgbotapi.NewInlineKeyboardRow(btn)
-		markup := tgbotapi.NewInlineKeyboardMarkup(row)
+		go bot.Send(tgbotapi.NewMessage(update.Message.Chat.ID, "Please wait..."))
 
-		msg := tgbotapi.MessageConfig{
-			Text: msgText,
-			BaseChat: tgbotapi.BaseChat{
-				ChatID:      update.Message.Chat.ID,
-				ReplyMarkup: markup,
-			},
+		stationsWithPrices, err := processLocation(update.Message.Location)
+		if err != nil {
+			bot.Send(tgbotapi.NewMessage(update.Message.Chat.ID, wrapError(err)))
+			continue
 		}
 
-		bot.Send(msg)
+		for _, swp := range stationsWithPrices {
+
+			btn := tgbotapi.NewInlineKeyboardButtonData("Map", "map:"+swp.Station.Id)
+			row := tgbotapi.NewInlineKeyboardRow(btn)
+			markup := tgbotapi.NewInlineKeyboardMarkup(row)
+
+			msg := tgbotapi.MessageConfig{
+				Text: utils.Format(&swp),
+				BaseChat: tgbotapi.BaseChat{
+					ChatID:      update.Message.Chat.ID,
+					ReplyMarkup: markup,
+				},
+			}
+
+			bot.Send(msg)
+
+		}
 	}
 }
 

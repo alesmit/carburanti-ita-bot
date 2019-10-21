@@ -12,4 +12,3 @@ type StationWithPrices struct {
 	Station Station `json:"station"`
 	Prices  []Price `json:"prices"`
 }
-
