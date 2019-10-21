@@ -1,0 +1,5 @@
+{
+  "name": "fuel-master",
+  "version": "1.0",
+  "description": "Telegram bot that returns the closest gas stations"
+}
