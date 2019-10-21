@@ -61,7 +61,7 @@ func main() {
 	}
 }
 
-func processLocation(location *tgbotapi.Location) ([]dataset.Station, error) {
+func processLocation(location *tgbotapi.Location) ([]dataset.StationWithPrices, error) {
 	if err := dataset.SyncDatasets(); err != nil {
 		return nil, errors.New("unable to sync datasets")
 	}
@@ -72,10 +72,10 @@ func processLocation(location *tgbotapi.Location) ([]dataset.Station, error) {
 		Qty: 3,
 	}
 
-	stations, err := dataset.GetClosestStations(req)
+	stationsWithPrices, err := dataset.GetClosestStationsWithPrices(req)
 	if err != nil {
 		return nil, errors.New("unable to get closest stations")
 	}
 
-	return stations, nil
+	return stationsWithPrices, nil
 }
