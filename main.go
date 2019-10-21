@@ -44,12 +44,12 @@ func main() {
 		if update.Message.Location != nil {
 			stations, err := processLocation(update.Message.Location)
 			if err != nil {
-				msgText = err.Error()
+				msgText = wrapError(err)
 			}
 
 			j, err := json.Marshal(stations)
 			if err != nil {
-				msgText = err.Error()
+				msgText = wrapError(err)
 			}
 
 			msgText = string(j)
@@ -78,4 +78,8 @@ func processLocation(location *tgbotapi.Location) ([]dataset.StationWithPrices, 
 	}
 
 	return stationsWithPrices, nil
+}
+
+func wrapError(e error) string {
+	return e.Error() + ". please try again later"
 }
