@@ -56,7 +56,9 @@ func main() {
 
 		}
 
+		btn := &tgbotapi.KeyboardButton{Text: "hello", RequestLocation: true}
 		msg := tgbotapi.NewMessage(update.Message.Chat.ID, msgText)
+		msg.ReplyMarkup = btn
 		bot.Send(msg)
 	}
 }
