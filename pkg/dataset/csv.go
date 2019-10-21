@@ -1,6 +1,8 @@
 package dataset
 
 import (
+	"github.com/alesmit/fuel-master/pkg/model"
+
 	"bufio"
 	"errors"
 	"os"
@@ -15,26 +17,7 @@ type GetClosestStationRequest struct {
 	Qty int
 }
 
-type Station struct {
-	Id      string  `json:"id"`
-	Name    string  `json:"name"`
-	Address string  `json:"address"`
-	Lat     float64 `json:"lat"`
-	Lon     float64 `json:"lon"`
-}
-
-type Price struct {
-	StationId string  `json:"stationId"`
-	FuelType  string  `json:"fuelType"`
-	Price     float64 `json:"price"`
-}
-
-type StationWithPrices struct {
-	Station Station `json:"station"`
-	Prices  []Price `json:"prices"`
-}
-
-func GetClosestStationsWithPrices(req *GetClosestStationRequest) ([]StationWithPrices, error) {
+func GetClosestStationsWithPrices(req *GetClosestStationRequest) ([]model.StationWithPrices, error) {
 	stations, err := parseCsvStations()
 	if err != nil {
 		return nil, errors.New("unable to parse stations csv")
@@ -58,10 +41,10 @@ func GetClosestStationsWithPrices(req *GetClosestStationRequest) ([]StationWithP
 	}
 
 	// build the resulting slice
-	var results []StationWithPrices
+	var results []model.StationWithPrices
 
 	for _, s := range stations {
-		var stationPrices []Price
+		var stationPrices []model.Price
 
 		for _, p := range prices {
 			if s.Id == p.StationId {
@@ -69,7 +52,7 @@ func GetClosestStationsWithPrices(req *GetClosestStationRequest) ([]StationWithP
 			}
 		}
 
-		results = append(results, StationWithPrices{
+		results = append(results, model.StationWithPrices{
 			Station: s,
 			Prices:  stationPrices,
 		})
@@ -78,9 +61,9 @@ func GetClosestStationsWithPrices(req *GetClosestStationRequest) ([]StationWithP
 	return results, nil
 }
 
-func parseCsvPricesForStations(stations []Station) ([]Price, error) {
+func parseCsvPricesForStations(stations []model.Station) ([]model.Price, error) {
 	var ds dataset = datasetPrices
-	var prices []Price
+	var prices []model.Price
 
 	filename, err := ds.mostRecentFilename()
 	if err != nil || filename == "" {
@@ -126,7 +109,7 @@ func parseCsvPricesForStations(stations []Station) ([]Price, error) {
 		}
 
 		if p > 0 {
-			prices = append(prices, Price{
+			prices = append(prices, model.Price{
 				StationId: stationId,
 				FuelType:  strings.TrimSpace(cells[1]),
 				Price:     p,
@@ -137,9 +120,9 @@ func parseCsvPricesForStations(stations []Station) ([]Price, error) {
 	return prices, nil
 }
 
-func parseCsvStations() ([]Station, error) {
+func parseCsvStations() ([]model.Station, error) {
 	var ds dataset = datasetStations
-	var stations []Station
+	var stations []model.Station
 
 	filename, err := ds.mostRecentFilename()
 	if err != nil || filename == "" {
@@ -185,7 +168,7 @@ func parseCsvStations() ([]Station, error) {
 
 		// push to the stations slice whether lat and lon are valid
 		if lat > 0 && lon > 0 {
-			stations = append(stations, Station{
+			stations = append(stations, model.Station{
 				Id:      strings.TrimSpace(cells[0]),
 				Name:    name,
 				Address: addr,

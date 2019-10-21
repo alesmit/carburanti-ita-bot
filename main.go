@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/alesmit/fuel-master/pkg/dataset"
+	"github.com/alesmit/fuel-master/pkg/model"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 
 	"encoding/json"
@@ -35,6 +36,7 @@ func main() {
 	go http.ListenAndServe(":"+port, nil)
 
 	for update := range updates {
+		log.Println(update)
 		if update.Message == nil {
 			continue
 		}
@@ -56,11 +58,9 @@ func main() {
 
 		}
 
-		markup := tgbotapi.NewInlineKeyboardMarkup(
-			tgbotapi.NewInlineKeyboardRow(
-				tgbotapi.NewInlineKeyboardButtonData("hello", "world"),
-			),
-		)
+		btn := tgbotapi.NewInlineKeyboardButtonData("Mappa", "asd")
+		row := tgbotapi.NewInlineKeyboardRow(btn)
+		markup := tgbotapi.NewInlineKeyboardMarkup(row)
 
 		msg := tgbotapi.MessageConfig{
 			Text: msgText,
@@ -74,7 +74,7 @@ func main() {
 	}
 }
 
-func processLocation(location *tgbotapi.Location) ([]dataset.StationWithPrices, error) {
+func processLocation(location *tgbotapi.Location) ([]model.StationWithPrices, error) {
 	if err := dataset.SyncDatasets(); err != nil {
 		return nil, errors.New("unable to sync datasets")
 	}
