@@ -60,11 +60,12 @@ func main() {
 			markup := tgbotapi.NewInlineKeyboardMarkup(row)
 
 			msg := tgbotapi.MessageConfig{
-				Text: utils.Format(&swp),
 				BaseChat: tgbotapi.BaseChat{
 					ChatID:      update.Message.Chat.ID,
 					ReplyMarkup: markup,
 				},
+				Text:      utils.Format(&swp),
+				ParseMode: tgbotapi.ModeMarkdown,
 			}
 
 			bot.Send(msg)
