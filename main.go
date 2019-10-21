@@ -56,15 +56,17 @@ func main() {
 
 		}
 
-		btn := &tgbotapi.InlineKeyboardButton{
-			Text:         "this is some text",
-		}
+		markup := tgbotapi.NewInlineKeyboardMarkup(
+			tgbotapi.NewInlineKeyboardRow(
+				tgbotapi.NewInlineKeyboardButtonData("hello", "world"),
+			),
+		)
 
-		msg := &tgbotapi.MessageConfig{
+		msg := tgbotapi.MessageConfig{
 			Text: msgText,
 			BaseChat: tgbotapi.BaseChat{
 				ChatID:      update.Message.Chat.ID,
-				ReplyMarkup: btn,
+				ReplyMarkup: markup,
 			},
 		}
 
