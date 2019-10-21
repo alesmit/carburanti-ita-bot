@@ -56,7 +56,10 @@ func main() {
 
 		}
 
-		btn := &tgbotapi.KeyboardButton{Text: "hello", RequestLocation: true}
+		btn := &tgbotapi.InlineKeyboardButton{
+			Text:         "this is some text",
+		}
+
 		msg := &tgbotapi.MessageConfig{
 			Text: msgText,
 			BaseChat: tgbotapi.BaseChat{
