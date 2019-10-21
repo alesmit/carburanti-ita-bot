@@ -36,7 +36,14 @@ func main() {
 	go http.ListenAndServe(":"+port, nil)
 
 	for update := range updates {
-		log.Println(update.InlineQuery.Query)
+
+		js, err := json.Marshal(update)
+		if err != nil {
+			log.Println("error", err)
+		} else {
+			log.Println("success", js)
+		}
+
 		if update.Message == nil {
 			continue
 		}
