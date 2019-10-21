@@ -36,7 +36,7 @@ func main() {
 	go http.ListenAndServe(":"+port, nil)
 
 	for update := range updates {
-		log.Println(update)
+		log.Println(update.InlineQuery.Query)
 		if update.Message == nil {
 			continue
 		}
