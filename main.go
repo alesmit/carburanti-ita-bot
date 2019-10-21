@@ -41,7 +41,7 @@ func main() {
 		if err != nil {
 			log.Println("error", err)
 		} else {
-			log.Println("success", js)
+			log.Println("success", string(js))
 		}
 
 		if update.Message == nil {
