@@ -5,6 +5,7 @@ import (
 
 	"bufio"
 	"errors"
+	"fmt"
 	"os"
 	"sort"
 	"strconv"
@@ -163,8 +164,8 @@ func parseCsvStations() ([]model.Station, error) {
 		}
 
 		// build the station's name and address
-		name := strings.TrimSpace(cells[2]) + " " + strings.TrimSpace(cells[1]) + strings.TrimSpace(cells[4])
-		addr := strings.TrimSpace(cells[5]) + " " + strings.TrimSpace(cells[6]) + strings.TrimSpace(cells[7])
+		name := fmt.Sprint(strings.TrimSpace(cells[2]), strings.TrimSpace(cells[4]))
+		addr := fmt.Sprint(strings.TrimSpace(cells[5]), strings.TrimSpace(cells[6]), strings.TrimSpace(cells[7]))
 
 		// push to the stations slice whether lat and lon are valid
 		if lat > 0 && lon > 0 {
