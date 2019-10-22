@@ -24,17 +24,19 @@ func HandleUpdate(update *tgbotapi.Update, api *tgbotapi.BotAPI) {
 		return
 	}
 
-	if update.CallbackQuery != nil {
-		if err := dataset.SyncDatasets(); err != nil {
-			handleError(errors.New("unable to sync datasets"), update, api)
+	/*
+		if update.CallbackQuery != nil {
+			if err := dataset.SyncDatasets(); err != nil {
+				handleError(errors.New("unable to sync datasets"), update, api)
+				return
+			}
+			if err := handleCallbackQuery(update, api); err != nil {
+				handleError(err, update, api)
+			}
+
 			return
 		}
-		if err := handleCallbackQuery(update, api); err != nil {
-			handleError(err, update, api)
-		}
-
-		return
-	}
+	*/
 
 	handleDefault(update, api)
 }
