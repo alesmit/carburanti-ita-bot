@@ -37,4 +37,5 @@ func handleLocation(update *tgbotapi.Update, api *tgbotapi.BotAPI) error {
 		api.Send(msg)
 	}
 
+	return nil
 }
