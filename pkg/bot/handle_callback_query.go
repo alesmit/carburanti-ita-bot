@@ -27,7 +27,14 @@ func sendStationInfo(stationId string, chatId int64, api *tgbotapi.BotAPI) error
 	}
 
 	// send station details
-	msg := tgbotapi.NewMessage(chatId, formatStation(station))
+	msg := tgbotapi.MessageConfig{
+		Text:      formatStation(station),
+		ParseMode: tgbotapi.ModeMarkdown,
+		BaseChat: tgbotapi.BaseChat{
+			ChatID: chatId,
+		},
+	}
+
 	api.Send(msg)
 
 	// send station position
