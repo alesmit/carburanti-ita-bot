@@ -2,6 +2,7 @@ package bot
 
 import (
 	"errors"
+	"github.com/alesmit/fuel-master/pkg/i18n"
 
 	"github.com/alesmit/fuel-master/pkg/dataset"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
@@ -34,7 +35,7 @@ func sendClosestStationsWithPrices(update *tgbotapi.Update, api *tgbotapi.BotAPI
 
 	for _, swp := range stationsWithPrices {
 
-		btn := tgbotapi.NewInlineKeyboardButtonData("Map", swp.Station.Id)
+		btn := tgbotapi.NewInlineKeyboardButtonData(i18n.T(update.Message.From.LanguageCode, i18n.BtnGetMap), swp.Station.Id)
 		row := tgbotapi.NewInlineKeyboardRow(btn)
 		markup := tgbotapi.NewInlineKeyboardMarkup(row)
 
