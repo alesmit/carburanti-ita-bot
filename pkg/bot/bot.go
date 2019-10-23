@@ -33,7 +33,7 @@ func HandleUpdate(update *tgbotapi.Update, api *tgbotapi.BotAPI) {
 	// handle query
 	if update.CallbackQuery != nil {
 		updateJson, _ := json.Marshal(update)
-		log.Println("RECEIVED JSON:", updateJson)
+		log.Println("RECEIVED JSON:", string(updateJson))
 		/*
 			if err := dataset.SyncDatasets(); err != nil {
 				handleError(errors.New("unable to sync datasets"), update, api)
