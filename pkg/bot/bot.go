@@ -1,6 +1,7 @@
 package bot
 
 import (
+	"encoding/json"
 	"github.com/alesmit/fuel-master/pkg/dataset"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 
@@ -10,6 +11,11 @@ import (
 func HandleUpdate(update *tgbotapi.Update, api *tgbotapi.BotAPI) {
 	if update.Message == nil {
 		return
+	}
+
+	if api.Debug {
+		updateJson, _ := json.Marshal(update)
+		api.Send(tgbotapi.NewMessage(update.Message.Chat.ID, string(updateJson)))
 	}
 
 	if update.Message.Location != nil {
