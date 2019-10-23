@@ -4,21 +4,21 @@ import (
 	"encoding/json"
 	"github.com/alesmit/fuel-master/pkg/dataset"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
+	"log"
 
 	"errors"
 )
 
 func HandleUpdate(update *tgbotapi.Update, api *tgbotapi.BotAPI) {
-	if update.Message == nil {
-		return
-	}
 
-	if api.Debug {
+	// debug
+	if api.Debug && update.Message != nil {
 		updateJson, _ := json.Marshal(update)
 		api.Send(tgbotapi.NewMessage(update.Message.Chat.ID, string(updateJson)))
 	}
 
-	if update.Message.Location != nil {
+	// handle location
+	if update.Message != nil && update.Message.Location != nil {
 		if err := dataset.SyncDatasets(); err != nil {
 			handleError(errors.New("unable to sync datasets"), update, api)
 			return
@@ -30,8 +30,11 @@ func HandleUpdate(update *tgbotapi.Update, api *tgbotapi.BotAPI) {
 		return
 	}
 
-	/*
-		if update.CallbackQuery != nil {
+	// handle query
+	if update.CallbackQuery != nil {
+		updateJson, _ := json.Marshal(update)
+		log.Println("RECEIVED JSON:", updateJson)
+		/*
 			if err := dataset.SyncDatasets(); err != nil {
 				handleError(errors.New("unable to sync datasets"), update, api)
 				return
@@ -39,10 +42,10 @@ func HandleUpdate(update *tgbotapi.Update, api *tgbotapi.BotAPI) {
 			if err := handleCallbackQuery(update, api); err != nil {
 				handleError(err, update, api)
 			}
+		*/
 
-			return
-		}
-	*/
+		return
+	}
 
 	handleDefault(update, api)
 }
