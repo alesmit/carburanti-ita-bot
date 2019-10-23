@@ -1,12 +1,12 @@
 package main
 
 import (
-	"github.com/alesmit/fuel-master/pkg/bot"
-	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
-
 	"log"
 	"net/http"
 	"os"
+
+	"github.com/alesmit/fuel-master/pkg/bot"
+	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 )
 
 func main() {

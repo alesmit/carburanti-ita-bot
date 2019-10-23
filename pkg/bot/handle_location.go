@@ -1,14 +1,26 @@
 package bot
 
 import (
-	"fmt"
+	"errors"
+
 	"github.com/alesmit/fuel-master/pkg/dataset"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
-
-	"errors"
 )
 
-func handleLocation(update *tgbotapi.Update, api *tgbotapi.BotAPI) error {
+func handleLocation(update *tgbotapi.Update, api *tgbotapi.BotAPI) {
+	chatId := update.Message.Chat.ID
+
+	if err := dataset.SyncDatasets(); err != nil {
+		sendError(errors.New("unable to sync datasets"), chatId, api)
+		return
+	}
+	if err := sendClosestStationsWithPrices(update, api); err != nil {
+		sendError(err, chatId, api)
+		return
+	}
+}
+
+func sendClosestStationsWithPrices(update *tgbotapi.Update, api *tgbotapi.BotAPI) error {
 	req := &dataset.GetClosestStationRequest{
 		Lat: update.Message.Location.Latitude,
 		Lon: update.Message.Location.Longitude,
@@ -22,12 +34,12 @@ func handleLocation(update *tgbotapi.Update, api *tgbotapi.BotAPI) error {
 
 	for _, swp := range stationsWithPrices {
 
-		btn := tgbotapi.NewInlineKeyboardButtonData("Map", fmt.Sprint(swp.Station.Lat, ";", swp.Station.Lon))
+		btn := tgbotapi.NewInlineKeyboardButtonData("Map", swp.Station.Id)
 		row := tgbotapi.NewInlineKeyboardRow(btn)
 		markup := tgbotapi.NewInlineKeyboardMarkup(row)
 
 		msg := tgbotapi.MessageConfig{
-			Text:      format(&swp),
+			Text:      formatStationWithPrices(&swp),
 			ParseMode: tgbotapi.ModeMarkdown,
 			BaseChat: tgbotapi.BaseChat{
 				ChatID:      update.Message.Chat.ID,

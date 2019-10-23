@@ -1,8 +1,6 @@
 package dataset
 
 import (
-	"github.com/alesmit/fuel-master/pkg/model"
-
 	"bufio"
 	"errors"
 	"fmt"
@@ -10,6 +8,8 @@ import (
 	"sort"
 	"strconv"
 	"strings"
+
+	"github.com/alesmit/fuel-master/pkg/model"
 )
 
 type GetClosestStationRequest struct {
@@ -60,6 +60,21 @@ func GetClosestStationsWithPrices(req *GetClosestStationRequest) ([]model.Statio
 	}
 
 	return results, nil
+}
+
+func GetStationById(stationId string) (*model.Station, error) {
+	stations, err := parseCsvStations()
+	if err != nil {
+		return nil, errors.New("unable to parse stations csv")
+	}
+
+	for _, station := range stations {
+		if station.Id == stationId {
+			return &station, nil
+		}
+	}
+
+	return nil, errors.New("unable to find station")
 }
 
 func parseCsvPricesForStations(stations []model.Station) ([]model.Price, error) {

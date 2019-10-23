@@ -1,28 +1,37 @@
 package bot
 
 import (
-	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
-
 	"errors"
-	"strconv"
-	"strings"
+
+	"github.com/alesmit/fuel-master/pkg/dataset"
+	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 )
 
-func handleCallbackQuery(update *tgbotapi.Update, api *tgbotapi.BotAPI) error {
-	data := strings.Split(update.CallbackQuery.Data, ";")
+func handleCallbackQuery(update *tgbotapi.Update, api *tgbotapi.BotAPI) {
+	chatId := update.CallbackQuery.Message.Chat.ID
 
-	// lat
-	lat, err := strconv.ParseFloat(data[0], 64)
+	if err := dataset.SyncDatasets(); err != nil {
+		sendError(errors.New("unable to sync datasets"), chatId, api)
+		return
+	}
+	if err := sendStationInfo(update.CallbackQuery.Data, chatId, api); err != nil {
+		sendError(err, chatId, api)
+		return
+	}
+}
+
+func sendStationInfo(stationId string, chatId int64, api *tgbotapi.BotAPI) error {
+	station, err := dataset.GetStationById(stationId)
 	if err != nil {
-		return errors.New("unable to parse latitude")
+		return err
 	}
 
-	lon, err := strconv.ParseFloat(data[1], 64)
-	if err != nil {
-		return errors.New("unable to parse longitude")
-	}
+	// send station details
+	msg := tgbotapi.NewMessage(chatId, formatStation(station))
+	api.Send(msg)
 
-	location := tgbotapi.NewLocation(update.CallbackQuery.Message.Chat.ID, lat, lon)
+	// send station position
+	location := tgbotapi.NewLocation(chatId, station.Lat, station.Lon)
 	api.Send(location)
 	return nil
 }
