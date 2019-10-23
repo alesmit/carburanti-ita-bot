@@ -1,6 +1,7 @@
 package bot
 
 import (
+	"fmt"
 	"github.com/alesmit/fuel-master/pkg/dataset"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 
@@ -21,7 +22,7 @@ func handleLocation(update *tgbotapi.Update, api *tgbotapi.BotAPI) error {
 
 	for _, swp := range stationsWithPrices {
 
-		btn := tgbotapi.NewInlineKeyboardButtonData("Map", "map:"+swp.Station.Id)
+		btn := tgbotapi.NewInlineKeyboardButtonData("Map", fmt.Sprint(swp.Station.Lat, ";", swp.Station.Lon))
 		row := tgbotapi.NewInlineKeyboardRow(btn)
 		markup := tgbotapi.NewInlineKeyboardMarkup(row)
 

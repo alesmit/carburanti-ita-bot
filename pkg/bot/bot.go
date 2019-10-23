@@ -12,19 +12,19 @@ import (
 func HandleUpdate(update *tgbotapi.Update, api *tgbotapi.BotAPI) {
 
 	// debug
-	if api.Debug && update.Message != nil {
+	if api.Debug {
 		updateJson, _ := json.Marshal(update)
-		api.Send(tgbotapi.NewMessage(update.Message.Chat.ID, string(updateJson)))
+		log.Println("RECEIVED JSON:", string(updateJson))
 	}
 
 	// handle location
 	if update.Message != nil && update.Message.Location != nil {
 		if err := dataset.SyncDatasets(); err != nil {
-			handleError(errors.New("unable to sync datasets"), update, api)
+			sendError(errors.New("unable to sync datasets"), update.Message.Chat.ID, api)
 			return
 		}
 		if err := handleLocation(update, api); err != nil {
-			handleError(err, update, api)
+			sendError(err, update.Message.Chat.ID, api)
 		}
 
 		return
@@ -32,26 +32,24 @@ func HandleUpdate(update *tgbotapi.Update, api *tgbotapi.BotAPI) {
 
 	// handle query
 	if update.CallbackQuery != nil {
-		updateJson, _ := json.Marshal(update)
-		log.Println("RECEIVED JSON:", string(updateJson))
-		/*
-			if err := dataset.SyncDatasets(); err != nil {
-				handleError(errors.New("unable to sync datasets"), update, api)
-				return
-			}
-			if err := handleCallbackQuery(update, api); err != nil {
-				handleError(err, update, api)
-			}
-		*/
+		if err := dataset.SyncDatasets(); err != nil {
+			sendError(errors.New("unable to sync datasets"), update.CallbackQuery.Message.Chat.ID, api)
+			return
+		}
+		if err := handleCallbackQuery(update, api); err != nil {
+			sendError(err, update.CallbackQuery.Message.Chat.ID, api)
+		}
 
 		return
 	}
 
-	handleDefault(update, api)
+	if update.Message != nil {
+		handleDefaultMessage(update, api)
+	}
 }
 
-func handleError(err error, update *tgbotapi.Update, api *tgbotapi.BotAPI) {
+func sendError(err error, chatId int64, api *tgbotapi.BotAPI) {
 	text := capitalize(err.Error()) + ". Please try again later."
-	msg := tgbotapi.NewMessage(update.Message.Chat.ID, text)
+	msg := tgbotapi.NewMessage(chatId, text)
 	api.Send(msg)
 }
