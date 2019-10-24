@@ -119,23 +119,39 @@ func parseCsvPricesForStations(stations []model.Station) ([]model.Price, error) 
 			continue
 		}
 
-		// get the price, skip invalid prices
-		p, err := strconv.ParseFloat(cells[2], 64)
+		// get the price, skip if invalid
+		price, err := strconv.ParseFloat(cells[2], 64)
 		if err != nil {
 			continue
 		}
 
-		// parse the last updated date, skip invalid dates
-		t, err := time.Parse("02/01/2006 15:04:05", cells[4])
+		// parse the last updated date, skip if invalid
+		updatedAt, err := time.Parse("02/01/2006 15:04:05", cells[4])
 		if err != nil {
+			continue
+		}
+
+		// fuel type
+		fuelType := strings.TrimSpace(cells[1])
+
+		// check for duplicate types and choose the most recent
+		skip := false
+		for index, p := range prices {
+			if p.FuelType == fuelType && p.UpdatedAt.Before(updatedAt) {
+				prices[index] = p
+				skip = true
+			}
+		}
+
+		if skip {
 			continue
 		}
 
 		prices = append(prices, model.Price{
 			StationId: stationId,
-			FuelType:  strings.TrimSpace(cells[1]),
-			Price:     p,
-			UpdatedAt: t,
+			FuelType:  fuelType,
+			Price:     price,
+			UpdatedAt: updatedAt,
 		})
 	}
 
