@@ -5,16 +5,19 @@ import "strings"
 const (
 	BtnGetMap = iota + 1
 	TextPleaseSendLocation
+	UnableToGetPricesInfo
 )
 
 var translations = map[string]map[int]string{
 	"en": {
 		BtnGetMap:              "Map",
 		TextPleaseSendLocation: "Please send your location",
+		UnableToGetPricesInfo:  "Unable to get prices information",
 	},
 	"it": {
 		BtnGetMap:              "Mappa",
 		TextPleaseSendLocation: "Invia la tua posizione",
+		UnableToGetPricesInfo:  "Informazioni sul prezzo non disponibili",
 	},
 }
 

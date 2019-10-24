@@ -4,12 +4,17 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/alesmit/fuel-master/pkg/i18n"
 	"github.com/alesmit/fuel-master/pkg/model"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 )
 
-func formatStationWithPrices(s *model.StationWithPrices) string {
+func formatStationWithPrices(s *model.StationWithPrices, lang string) string {
 	out := formatStation(&s.Station)
+
+	if len(s.Prices) == 0 {
+		out += "\n" + fmt.Sprintln(i18n.T(lang, i18n.UnableToGetPricesInfo))
+	}
 
 	for _, p := range s.Prices {
 		out += "\n" + p.FuelType + ": € " + fmt.Sprintf("%.3f", p.Price) + "/lt."

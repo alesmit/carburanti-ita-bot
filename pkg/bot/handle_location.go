@@ -33,6 +33,10 @@ func sendClosestStationsWithPrices(update *tgbotapi.Update, api *tgbotapi.BotAPI
 		return errors.New("unable to get closest stations")
 	}
 
+	if len(stationsWithPrices) == 0 {
+		return errors.New("no gas stations found in your area")
+	}
+
 	for _, swp := range stationsWithPrices {
 
 		btn := tgbotapi.NewInlineKeyboardButtonData(i18n.T(update.Message.From.LanguageCode, i18n.BtnGetMap), swp.Station.Id)
@@ -40,7 +44,7 @@ func sendClosestStationsWithPrices(update *tgbotapi.Update, api *tgbotapi.BotAPI
 		markup := tgbotapi.NewInlineKeyboardMarkup(row)
 
 		msg := tgbotapi.MessageConfig{
-			Text:      formatStationWithPrices(&swp),
+			Text:      formatStationWithPrices(&swp, update.Message.From.LanguageCode),
 			ParseMode: tgbotapi.ModeMarkdown,
 			BaseChat: tgbotapi.BaseChat{
 				ChatID:      update.Message.Chat.ID,
