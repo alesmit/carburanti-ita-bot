@@ -142,8 +142,8 @@ func parseCsvPricesForStations(stations []model.Station) ([]model.Price, error) 
 		})
 	}
 
-	result := removeDuplicateFuelTypes(&prices)
-	return result, nil
+	//result := removeDuplicateFuelTypes(&prices)
+	return prices, nil
 }
 
 func parseCsvStations() ([]model.Station, error) {
