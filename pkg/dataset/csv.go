@@ -54,14 +54,11 @@ func GetClosestStationsWithPrices(req *GetClosestStationRequest) ([]model.Statio
 			}
 		}
 
+		stationPrices = removeDuplicateFuelTypes(&stationPrices)
 		results = append(results, model.StationWithPrices{
 			Station: s,
 			Prices:  stationPrices,
 		})
-	}
-
-	for _, r := range results {
-		r.Prices = removeDuplicateFuelTypes(&r.Prices)
 	}
 
 	return results, nil
