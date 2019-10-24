@@ -60,6 +60,10 @@ func GetClosestStationsWithPrices(req *GetClosestStationRequest) ([]model.Statio
 		})
 	}
 
+	for _, r := range results {
+		r.Prices = removeDuplicateFuelTypes(&r.Prices)
+	}
+
 	return results, nil
 }
 
@@ -142,7 +146,6 @@ func parseCsvPricesForStations(stations []model.Station) ([]model.Price, error) 
 		})
 	}
 
-	//result := removeDuplicateFuelTypes(&prices)
 	return prices, nil
 }
 

@@ -2,9 +2,9 @@ package bot
 
 import (
 	"errors"
-	"github.com/alesmit/fuel-master/pkg/i18n"
 
 	"github.com/alesmit/fuel-master/pkg/dataset"
+	"github.com/alesmit/fuel-master/pkg/i18n"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 )
 

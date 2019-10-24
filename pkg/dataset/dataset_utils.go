@@ -1,13 +1,14 @@
 package dataset
 
 import (
-	"github.com/alesmit/fuel-master/pkg/model"
 	"io/ioutil"
 	"math"
 	"os"
 	"sort"
 	"strings"
 	"time"
+
+	"github.com/alesmit/fuel-master/pkg/model"
 )
 
 // check whether the datasets folder exists or not
