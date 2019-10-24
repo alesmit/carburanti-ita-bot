@@ -134,19 +134,6 @@ func parseCsvPricesForStations(stations []model.Station) ([]model.Price, error) 
 		// fuel type
 		fuelType := strings.TrimSpace(cells[1])
 
-		// check for duplicate types and choose the most recent
-		skip := false
-		for index, p := range prices {
-			if p.FuelType == fuelType && p.UpdatedAt.Before(updatedAt) {
-				prices[index] = p
-				skip = true
-			}
-		}
-
-		if skip {
-			continue
-		}
-
 		prices = append(prices, model.Price{
 			StationId: stationId,
 			FuelType:  fuelType,
@@ -155,7 +142,8 @@ func parseCsvPricesForStations(stations []model.Station) ([]model.Price, error) 
 		})
 	}
 
-	return prices, nil
+	result := removeDuplicateFuelTypes(&prices)
+	return result, nil
 }
 
 func parseCsvStations() ([]model.Station, error) {

@@ -1,6 +1,7 @@
 package dataset
 
 import (
+	"github.com/alesmit/fuel-master/pkg/model"
 	"io/ioutil"
 	"math"
 	"os"
@@ -110,4 +111,31 @@ func isExpired(filename string) bool {
 // get distance between two points: (x1, y1) and (x2, y2)
 func getDistance(x1 float64, y1 float64, x2 float64, y2 float64) float64 {
 	return math.Sqrt(math.Pow(x1-x2, 2) + math.Pow(y1-y2, 2))
+}
+
+func removeDuplicateFuelTypes(prices *[]model.Price) []model.Price {
+	fuelTypes := map[string][]model.Price{}
+	for _, p := range *prices {
+		fuelTypes[p.FuelType] = append(fuelTypes[p.FuelType], p)
+	}
+
+	var result []model.Price
+
+	for _, v := range fuelTypes {
+		var item model.Price
+
+		if len(v) <= 1 {
+			item = v[0]
+		} else {
+			sort.Slice(v, func(i, j int) bool {
+				return v[i].UpdatedAt.Before(v[j].UpdatedAt)
+			})
+
+			item = v[0]
+		}
+
+		result = append(result, item)
+	}
+
+	return result
 }
