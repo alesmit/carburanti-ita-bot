@@ -8,7 +8,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/alesmit/fuel-master/pkg/model"
+	"github.com/alesmit/carburanti-ita-bot/pkg/model"
 )
 
 // check whether the datasets folder exists or not

@@ -10,7 +10,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/alesmit/fuel-master/pkg/model"
+	"github.com/alesmit/carburanti-ita-bot/pkg/model"
 )
 
 type GetClosestStationRequest struct {
