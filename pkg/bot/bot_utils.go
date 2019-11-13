@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/alesmit/fuel-master/pkg/i18n"
-	"github.com/alesmit/fuel-master/pkg/model"
+	"github.com/alesmit/carburanti-ita-bot/pkg/i18n"
+	"github.com/alesmit/carburanti-ita-bot/pkg/model"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 )
 

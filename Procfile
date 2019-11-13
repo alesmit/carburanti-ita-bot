@@ -1,1 +1,1 @@
-web: bin/fuel-master
+web: bin/carburanti-ita-bot

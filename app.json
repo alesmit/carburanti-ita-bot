@@ -1,5 +1,5 @@
 {
-  "name": "fuel-master",
+  "name": "carburanti-ita-bot",
   "version": "1.0",
-  "description": "Telegram bot that returns the closest gas stations"
+  "description": "Telegram bot that returns the closest gas stations in Italy"
 }

@@ -1,4 +1,4 @@
-module github.com/alesmit/fuel-master
+module github.com/alesmit/carburanti-ita-bot
 
 go 1.12
 

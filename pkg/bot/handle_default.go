@@ -1,7 +1,7 @@
 package bot
 
 import (
-	"github.com/alesmit/fuel-master/pkg/i18n"
+	"github.com/alesmit/carburanti-ita-bot/pkg/i18n"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 )
 
